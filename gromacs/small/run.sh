@@ -1,8 +1,8 @@
 #!/bin/sh
 
 BASE=`pwd`
-ITERS=10
-STEPS="10000 100000"
+REPS=10
+ITERS="10000 100000"
 
 GROMPP_OPTS=""   # additional grompp options
 NDXFILE_OPTS=""  # additional grompp options to set ndxfile 
@@ -11,24 +11,31 @@ THREADNUM=1      # number of threads for mdrun
 
 # ------------------------------------------------------------------------------
 #
-run_application()
+run_experiment()
 {
-    step=$1
-    iter=$2
+    # run one experiment.  We get the number of iterations passed which is then
+    # set in grompp.mdp, and the repetition ID.
 
-    experiment=`printf "experiment_%d_%03d" $step $iter`
+    iter=$1
+    rep=$2
 
-    echo "running experiment $experiment"
+    experiment=`printf "experiment_%d_%03d" $iter $rep`
 
+    # create that experiment in the given base dir (we fail if that exists)
     cd       $BASE
-    rm   -rf $experiment/
+    test  -e $experiment && echo "experiment $experiment exists in base $BASE"
+    test  -e $experiment && return
     mkdir -p $experiment/
     cd       $experiment/
     
+    echo "running experiment $experiment"
+
+    # prepare input data.  Vivek can motivate this magic I think :)
     cat ../rawdata/start.gro  | sed "1"','"25"'!d'            > start_tmp.gro
-    cat ../rawdata/grompp.mdp | sed -e "s/###STEP###/$step/g" > grompp.mdp
+    cat ../rawdata/grompp.mdp | sed -e "s/###ITER###/$iter/g" > grompp.mdp
     cat ../rawdata/topol.top  > topol.top
     
+    # run the preprocessor (one thread, very quick)
     grompp \
            $GROMPP_OPTS \
            $NDXFILE_OPTS \
@@ -39,6 +46,7 @@ run_application()
            -po mdout.mdp \
          > log 2>&1
 
+    # this is the real application
     mdrun  \
            $MDRUN_OPTS \
            -nt  $THREADNUM \
@@ -49,20 +57,22 @@ run_application()
            -cpo state.cpt \
            -c   outgro \
         >> log 2>&1
-
 }
 
 
 # ------------------------------------------------------------------------------
 #
-for step in $STEPS
+
+# one set of experiments for each given number of iterations
+for iter in $ITERS
 do
 
-    iter=0
-    while ! test $iter = $ITERS
+    # run $REPS numbers of experiments for this $iter
+    rep=0
+    while ! test $rep = $REPS
     do
-        iter=$((iter+1))
-        run_application $step $iter
+        rep=$((rep+1))
+        run_experiment $iter $rep
     done
 
 done
