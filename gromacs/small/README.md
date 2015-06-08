@@ -9,6 +9,9 @@ can be adjusted at the top of the script:
 
 Several Gromacs command line parameters can also be set in the script,
 specifically the number of threads to use -- but the default settings
-should work all right.  The settings have been tested with
-Gromacs-v5.0.4.
+should work all right.
+
+### Requirements:
+
+* Gromacs (tested with v5.0.4)
 

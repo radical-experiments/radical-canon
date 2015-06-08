@@ -23,7 +23,7 @@ run_experiment()
 
     # create that experiment in the given base dir (we fail if that exists)
     cd       $BASE
-    test  -e $experiment && echo "experiment $experiment exists in base $BASE"
+    test  -e $experiment && echo "experiment $experiment exists in base $BASE/"
     test  -e $experiment && return
     mkdir -p $experiment/
     cd       $experiment/
