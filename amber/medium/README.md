@@ -4,7 +4,7 @@ Current configuration performs 6000 timesteps.
 
 Provided files are:
 
-ace_ala_nme.mdin - input file
-ace_ala_nme.parm7 - parameters file
-ace_ala_nme.inpcrd - coordinates file
-ace_ala_nme_us.RST - restraint file
+* ace_ala_nme.mdin - input file
+* ace_ala_nme.parm7 - parameters file
+* ace_ala_nme.inpcrd - coordinates file
+* ace_ala_nme_us.RST - restraint file
