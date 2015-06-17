@@ -13,6 +13,5 @@ should work all right.
 
 ### Requirements:
 
-* Gromacs (tested with v5.0.4)
-* Gromacs-4.6.5 for PYP (medium)
+* Gromacs (tested with v4.6.5)
 
