@@ -36,11 +36,14 @@ run_experiment()
     cat ../rawdata/start.gro  > start_tmp.gro
     cat ../rawdata/grompp.mdp > grompp.mdp
     cat ../rawdata/topol.top  > topol.top
+    cat ../rawdata/index.ndx > index.ndx
+    cp ../rawdata/*.itp .
     
     # run the preprocessor (one thread, very quick)
     grompp \
            $GROMPP_OPTS \
            $NDXFILE_OPTS \
+	   -n index.ndx \
            -f  grompp.mdp \
            -p  topol.top \
            -c  start_tmp.gro \
