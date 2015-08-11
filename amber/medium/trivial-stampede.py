@@ -83,9 +83,10 @@ if __name__ == "__main__":
     
         pmgr.register_callback(pilot_state_cb)
         pdesc = rp.ComputePilotDescription()
-        pdesc.resource = "xsede.gordon"
-        pdesc.project = "unc101"
-        pdesc.runtime  = 30 # minutes
+        pdesc.resource = "xsede.stampede"
+        pdesc.queue = "development"
+        pdesc.project = "TG-MCB090174"
+        pdesc.runtime  = 30 
         pdesc.cores    = 16
         pdesc.cleanup  = False
     
@@ -104,8 +105,8 @@ if __name__ == "__main__":
         for unit_count in range(0, 16):
             cud = rp.ComputeUnitDescription()
             cud.name          = "unit_%03d" % unit_count
-            cud.executable    = "/opt/amber/bin/sander"
-            cud.pre_exec      = ["module load amber"]
+            cud.executable    = "/opt/apps/intel13/mvapich2_1_9/amber/12.0/bin/sander"
+            cud.pre_exec      = ["module restore", "module load amber", "module load python"]
             cud.arguments     = ["-O ", "-i ", "ace_ala_nme.mdin", 
                                         "-o ", "ace_ala_nme.mdout", 
                                         "-p ", "ace_ala_nme.parm7", 
