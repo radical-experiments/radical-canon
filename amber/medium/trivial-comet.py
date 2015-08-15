@@ -83,10 +83,10 @@ if __name__ == "__main__":
     
         pmgr.register_callback(pilot_state_cb)
         pdesc = rp.ComputePilotDescription()
-        pdesc.resource = "xsede.gordon"
-        pdesc.project = "unc101"
+        pdesc.resource = "xsede.comet"
+        pdesc.project = "TG-MCB090174"
         pdesc.runtime  = 30 # minutes
-        pdesc.cores    = 32
+        pdesc.cores    = 48
         pdesc.cleanup  = False
     
         pilot = pmgr.submit_pilots(pdesc)
@@ -101,7 +101,7 @@ if __name__ == "__main__":
         umgr.add_pilots(pilot)
     
         cuds = []
-        for unit_count in range(0, 32):
+        for unit_count in range(0, 48):
             cud = rp.ComputeUnitDescription()
             cud.name          = "unit_%03d" % unit_count
             cud.executable    = "/opt/amber/bin/sander"
