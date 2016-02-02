@@ -2,7 +2,7 @@
  &cntrl
   irest = 0,
   ntx = 1,
-  nstlim = 1000,
+  nstlim = 6000,
   dt = 0.001,
   temp0 = 600.0,
   ntpr = 10000, ntwx = 10000, ntwr = 10000,

@@ -86,7 +86,7 @@ if __name__ == "__main__":
         pdesc.resource = "xsede.supermic"
         pdesc.project = "TG-MCB090174"
         pdesc.runtime  = 30 
-        pdesc.cores    = 20
+        pdesc.cores    = 40
         pdesc.cleanup  = False
     
         pilot = pmgr.submit_pilots(pdesc)
@@ -101,25 +101,27 @@ if __name__ == "__main__":
         umgr.add_pilots(pilot)
     
         cuds = []
-        for unit_count in range(0, 10):
+        for unit_count in range(0, 2):
             cud = rp.ComputeUnitDescription()
-            cud.executable    = "/home/antontre/amber14/bin/sander"
+            cud.executable    = "python amber_launcher.py"
+            #cud.executable    = "/home/antontre/amber14/bin/sander"
             cud.pre_exec      = ["module unload python/2.7.7-anaconda", "module load python/2.7.7/GCC-4.9.0", "module load amber/14/INTEL-140-MVAPICH2-2.0"]
-            cud.arguments     = ["-O ", "-i ", "ace_ala_nme.mdin", 
-                                        "-o ", "ace_ala_nme.mdout", 
-                                        "-p ", "ace_ala_nme.parm7", 
-                                        "-c ", "ace_ala_nme.inpcrd.0.0", 
-                                        "-r ", "ace_ala_nme.rst", 
-                                        "-x ", "ace_ala_nme.mdcrd", 
-                                        "-inf ", "ace_ala_nme.mdinfo"]
-            cud.cores         = 1
+            #cud.arguments     = ["-O ", "-i ", "ace_ala_nme.mdin", 
+            #                            "-o ", "ace_ala_nme.mdout", 
+            #                            "-p ", "ace_ala_nme.parm7", 
+            #                            "-c ", "ace_ala_nme.inpcrd.0.0", 
+            #                            "-r ", "ace_ala_nme.rst", 
+            #                            "-x ", "ace_ala_nme.mdcrd", 
+            #                            "-inf ", "ace_ala_nme.mdinfo"]
+            cud.cores         = 20
             cud.input_staging = ["amber.input/ace_ala_nme.inpcrd.0.0",
                                  "amber.input/ace_ala_nme.mdin",
                                  "amber.input/ace_ala_nme.parm7",
-                                 "amber.input/ace_ala_nme_us.RST"]
-            cud.output_staging = ["ace_ala_nme.mdout",
-                                  "ace_ala_nme.mdinfo"]
-            cud.mpi = False
+                                 "amber.input/ace_ala_nme_us.RST",
+                                 "amber_launcher.py"]
+            #cud.output_staging = ["ace_ala_nme.mdout",
+            #                      "ace_ala_nme.mdinfo"]
+            cud.mpi = True
             cuds.append(cud)
     
         units = umgr.submit_units(cuds)
