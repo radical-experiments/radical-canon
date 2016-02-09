@@ -104,8 +104,10 @@ if __name__ == "__main__":
         cuds = []
         for unit_count in range(0, 2):
             cud = rp.ComputeUnitDescription()
-            #cud.name          = "unit_%03d" % unit_count
+            # if GPU
             cud.executable    = "/opt/apps/intel13/mvapich2_1_9/amber/12.0/bin/pmemd.cuda"
+            # if MPI
+            # cud.executable    = "/opt/apps/intel13/mvapich2_1_9/amber/12.0/bin/sander.MPI"
             cud.pre_exec      = ["module restore", "module load intel/13.0.2.146", "module load amber", "module load python"]
             cud.arguments     = ["-O ", "-i ", "ace_ala_nme.mdin", 
                                         "-o ", "ace_ala_nme.mdout", 
