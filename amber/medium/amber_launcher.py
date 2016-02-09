@@ -19,7 +19,7 @@ if __name__ == '__main__':
     out = "ace_ala_nme_{0}.mdout".format( rank )
     inf = "ace_ala_nme_{0}.mdinfo".format( rank )
 
-    cmd = "/home/antontre/amber14/bin/sander " + "-O " + \
+    cmd = "/home/antons/amber/amber14/bin " + "-O " + \
           "-i " + "ace_ala_nme.mdin " + \
           "-o " + out + " " + \
           "-p " + "ace_ala_nme.parm7 " + \
@@ -27,8 +27,7 @@ if __name__ == '__main__':
           "-r " + "ace_ala_nme.rst " + \
           "-x " + "ace_ala_nme.mdcrd " + \
           "-inf " + inf + " "
-    process = [Popen(cmd, subprocess.PIPE, shell=True)]
-    #process.wait()
+    process = Popen(cmd, subprocess.PIPE, shell=True)
+    process.wait()
 
     comm.Barrier()
-

@@ -74,19 +74,19 @@ if __name__ == "__main__":
     sid = session.uid
     print "session id: %s" % sid
 
-    cred = rp.Context('ssh')
-    cred.user_id = "antontre"
-    session.add_context(cred)
+    #cred = rp.Context('ssh')
+    #cred.user_id = "antontre"
+    #session.add_context(cred)
 
     try:
         pmgr = rp.PilotManager(session=session)
     
         pmgr.register_callback(pilot_state_cb)
         pdesc = rp.ComputePilotDescription()
-        pdesc.resource = "xsede.supermic"
-        pdesc.project = "TG-MCB090174"
-        pdesc.runtime  = 30 
-        pdesc.cores    = 40
+        pdesc.resource = "local.localhost"
+        #pdesc.project = "TG-MCB090174"
+        pdesc.runtime  = 10 
+        pdesc.cores    = 2
         pdesc.cleanup  = False
     
         pilot = pmgr.submit_pilots(pdesc)
@@ -105,7 +105,7 @@ if __name__ == "__main__":
             cud = rp.ComputeUnitDescription()
             cud.executable    = "python amber_launcher.py"
             #cud.executable    = "/home/antontre/amber14/bin/sander"
-            cud.pre_exec      = ["module unload python/2.7.7-anaconda", "module load python/2.7.7/GCC-4.9.0", "module load amber/14/INTEL-140-MVAPICH2-2.0"]
+            #cud.pre_exec      = ["module unload python/2.7.7-anaconda", "module load python/2.7.7/GCC-4.9.0", "module load amber/14/INTEL-140-MVAPICH2-2.0"]
             #cud.arguments     = ["-O ", "-i ", "ace_ala_nme.mdin", 
             #                            "-o ", "ace_ala_nme.mdout", 
             #                            "-p ", "ace_ala_nme.parm7", 
@@ -113,7 +113,7 @@ if __name__ == "__main__":
             #                            "-r ", "ace_ala_nme.rst", 
             #                            "-x ", "ace_ala_nme.mdcrd", 
             #                            "-inf ", "ace_ala_nme.mdinfo"]
-            cud.cores         = 20
+            cud.cores         = 2
             cud.input_staging = ["amber.input/ace_ala_nme.inpcrd.0.0",
                                  "amber.input/ace_ala_nme.mdin",
                                  "amber.input/ace_ala_nme.parm7",

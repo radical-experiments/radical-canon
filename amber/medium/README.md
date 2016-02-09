@@ -8,3 +8,9 @@ Provided files are:
 * ace_ala_nme.parm7 - parameters file
 * ace_ala_nme.inpcrd - coordinates file
 * ace_ala_nme_us.RST - restraint file
+
+
+#---------------------------------------------------------
+smic example:
+
+

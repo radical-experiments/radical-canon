@@ -69,13 +69,13 @@ if __name__ == "__main__":
     else:
         session_name = None
 
-    dburl = "mongodb://ec2-54-221-194-147.compute-1.amazonaws.com:24242/"
-    session = rp.Session(database_url=dburl, name=session_name, database_name='cdi-tests')
+    dburl = "mongodb://treikali:pf43ek6klo@ds051595.mongolab.com:51595/cdi-testing"
+    session = rp.Session(database_url=dburl)
     sid = session.uid
     print "session id: %s" % sid
 
     cred = rp.Context('ssh')
-    cred.user_id = "antontre"
+    cred.user_id = "<N/A>"
     session.add_context(cred)
 
     try:
@@ -84,10 +84,10 @@ if __name__ == "__main__":
         pmgr.register_callback(pilot_state_cb)
         pdesc = rp.ComputePilotDescription()
         pdesc.resource = "xsede.stampede"
-        pdesc.queue = "development"
-        pdesc.project = "TG-MCB090174"
+        pdesc.queue = "gpu"
+        pdesc.project = "<N/A>"
         pdesc.runtime  = 30 
-        pdesc.cores    = 16
+        pdesc.cores    = 32
         pdesc.cleanup  = False
     
         pilot = pmgr.submit_pilots(pdesc)
@@ -102,11 +102,11 @@ if __name__ == "__main__":
         umgr.add_pilots(pilot)
     
         cuds = []
-        for unit_count in range(0, 16):
+        for unit_count in range(0, 2):
             cud = rp.ComputeUnitDescription()
-            cud.name          = "unit_%03d" % unit_count
-            cud.executable    = "/opt/apps/intel13/mvapich2_1_9/amber/12.0/bin/sander"
-            cud.pre_exec      = ["module restore", "module load amber", "module load python"]
+            #cud.name          = "unit_%03d" % unit_count
+            cud.executable    = "/opt/apps/intel13/mvapich2_1_9/amber/12.0/bin/pmemd.cuda"
+            cud.pre_exec      = ["module restore", "module load intel/13.0.2.146", "module load amber", "module load python"]
             cud.arguments     = ["-O ", "-i ", "ace_ala_nme.mdin", 
                                         "-o ", "ace_ala_nme.mdout", 
                                         "-p ", "ace_ala_nme.parm7", 
@@ -114,7 +114,7 @@ if __name__ == "__main__":
                                         "-r ", "ace_ala_nme.rst", 
                                         "-x ", "ace_ala_nme.mdcrd", 
                                         "-inf ", "ace_ala_nme.mdinfo"]
-            cud.cores         = 1
+            cud.cores         = 16
             cud.input_staging = ["input/ace_ala_nme.inpcrd",
                                  "input/ace_ala_nme.mdin",
                                  "input/ace_ala_nme.parm7",
