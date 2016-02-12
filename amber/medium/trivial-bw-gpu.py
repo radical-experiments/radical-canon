@@ -72,14 +72,13 @@ if __name__ == "__main__":
     else:
         session_name = None
 
-    #dburl = "mongodb://ec2-54-221-194-147.compute-1.amazonaws.com:24242/"
-    dburl = "mongodb://treikali:pf43ek6klo@ds059145.mongolab.com:59145/cdi-testing"
+    dburl = "mongodb://<uri>:24242/"
     session = rp.Session(database_url=dburl)
     sid = session.uid
     print "session id: %s" % sid
 
     cred = rp.Context('ssh')
-    cred.user_id = "treikali"
+    cred.user_id = "me"
     session.add_context(cred)
 
     try:
