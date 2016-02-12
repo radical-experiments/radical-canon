@@ -10,9 +10,7 @@ import radical.pilot as rp
 #------------------------------------------------------------------------------
 #
 
-"""
 def pilot_state_cb (pilot, state):
-    # this callback is invoked on all pilot state changes
 
     print "[Callback]: ComputePilot '%s' state: %s." % (pilot.uid, state)
 
@@ -26,7 +24,6 @@ def pilot_state_cb (pilot, state):
 #------------------------------------------------------------------------------
 #
 def unit_state_cb (unit, state):
-    # this callback is invoked on all unit state changes
 
     print "[Callback]: ComputeUnit  '%s: %s' (on %s) state: %s." \
         % (unit.name, unit.uid, unit.pilot_id, state)
@@ -43,9 +40,6 @@ def unit_state_cb (unit, state):
 #
 def wait_queue_size_cb(umgr, wait_queue_size):
      
-    #this callback is called when the size of the unit managers wait_queue
-    #changes.
-    
     print "[Callback]: UnitManager  '%s' wait_queue_size changed to %s." \
         % (umgr.uid, wait_queue_size)
 
@@ -61,7 +55,6 @@ def wait_queue_size_cb(umgr, wait_queue_size):
                 print "cancel pilot %s" % pilot.uid
                 umgr.remove_pilot (pilot.uid)
                 pilot.cancel ()
-"""
 
 #-------------------------------------------------------------------------------
 #
@@ -72,7 +65,7 @@ if __name__ == "__main__":
     else:
         session_name = None
 
-    dburl = "mongodb://<uri>:24242/"
+    dburl = "mongodb://<uri>:<port>/"
     session = rp.Session(database_url=dburl)
     sid = session.uid
     print "session id: %s" % sid
@@ -84,7 +77,7 @@ if __name__ == "__main__":
     try:
         pmgr = rp.PilotManager(session=session)
     
-        # pmgr.register_callback(pilot_state_cb)
+        pmgr.register_callback(pilot_state_cb)
         pdesc = rp.ComputePilotDescription()
         pdesc.resource = "ncsa.bw_xk"
         pdesc.project = "gkd"
@@ -98,16 +91,15 @@ if __name__ == "__main__":
             session=session,
             scheduler=rp.SCHED_BACKFILLING)
     
-        # umgr.register_callback(unit_state_cb, rp.UNIT_STATE)
+        umgr.register_callback(unit_state_cb, rp.UNIT_STATE)
 
-        # umgr.register_callback(wait_queue_size_cb, rp.WAIT_QUEUE_SIZE)
+        umgr.register_callback(wait_queue_size_cb, rp.WAIT_QUEUE_SIZE)
         umgr.add_pilots(pilot)
     
         cuds = []
         for unit_count in range(0, 8):
             cud = rp.ComputeUnitDescription()
             cud.executable    = "/u/sciteam/treikali/amber.cuda/amber/bin/pmemd.cuda"
-            #cud.pre_exec      = ["module restore", "module load intel/13.0.2.146", "module load amber", "module load python"]
             cud.arguments     = ["-O ", "-i ", "ace_ala_nme.mdin", 
                                         "-o ", "ace_ala_nme.mdout", 
                                         "-p ", "ace_ala_nme_big.parm7", 
