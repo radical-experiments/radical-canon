@@ -38,32 +38,33 @@ run_experiment()
     cp  ../rawdata/*.itp .
 
     # run the preprocessor (one thread, very quick)
-    gmx grompp \
-           $GROMPP_OPTS \
-           $NDXFILE_OPTS \
-           -n  index.ndx \
-           -f  grompp.mdp \
-           -p  topol.top \
-           -c  start_tmp.gro \
-           -o  topol.tpr \
-           -po mdout.mdp \
-           -maxwarn 1 \
-
-       # > log 2>&1
+    cmd=$(echo "gmx grompp
+           $GROMPP_OPTS
+           $NDXFILE_OPTS
+           -n  index.ndx
+           -f  grompp.mdp
+           -p  topol.top
+           -c  start_tmp.gro
+           -o  topol.tpr
+           -po mdout.mdp 
+           -maxwarn 1" | xargs echo)  # collapse spaces
+    echo "run $cmd"
+    $cmd > log 2>&1
     
 
     # this is the real application
-    gmx mdrun  \
-           $MDRUN_OPTS \
-           -nt  $THREADNUM \
-           -o   traj.trr \
-           -e   ener.edr \
-           -s   topol.tpr \
-           -g   mdlog.log \
-           -cpo state.cpt \
-           -c   outgro \
+    cmd=$(echo "gmx mdrun
+           $MDRUN_OPTS
+           -nt  $THREADNUM
+           -o   traj.trr
+           -e   ener.edr
+           -s   topol.tpr
+           -g   mdlog.log
+           -cpo state.cpt
+           -c   outgro" | xargs echo)  #  collapse spaces
 
-      # >> log 2>&1
+    echo "run $cmd"
+    $cmd >> log 2>&1
 }
 
 

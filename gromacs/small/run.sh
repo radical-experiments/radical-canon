@@ -28,7 +28,8 @@ run_experiment()
     mkdir -p $experiment/
     cd       $experiment/
     
-    echo "running experiment $experiment"
+    echo
+    echo "run experiment $experiment"
 
     # prepare input data.  Vivek can motivate this magic I think :)
     cat ../rawdata/start.gro  | sed "1"','"25"'!d'            > start_tmp.gro
@@ -36,28 +37,30 @@ run_experiment()
     cat ../rawdata/topol.top  > topol.top
     
     # run the preprocessor (one thread, very quick)
-    gmx  grompp \
-           $GROMPP_OPTS \
-           $NDXFILE_OPTS \
-           -f  grompp.mdp \
-           -p  topol.top \
-           -c  start_tmp.gro \
-           -o  topol.tpr \
-           -po mdout.mdp \
-         > log 2>&1
+    cmd=$(echo "gmx  grompp
+           $GROMPP_OPTS
+           $NDXFILE_OPTS
+           -f  grompp.mdp
+           -p  topol.top
+           -c  start_tmp.gro
+           -o  topol.tpr
+           -po mdout.mdp" | xargs echo)  #  collapse spaces
+    echo "run $cmd"
+    $cmd > log 2>&1
     
 
     # this is the real application
-    gmx mdrun  \
-           $MDRUN_OPTS \
-           -nt  $THREADNUM \
-           -o   traj.trr \
-           -e   ener.edr \
-           -s   topol.tpr \
-           -g   mdlog.log \
-           -cpo state.cpt \
-           -c   outgro \
-        >> log 2>&1
+    cmd=$(echo "gmx mdrun
+           $MDRUN_OPTS
+           -nt  $THREADNUM
+           -o   traj.trr
+           -e   ener.edr
+           -s   topol.tpr
+           -g   mdlog.log
+           -cpo state.cpt
+           -c   outgro" | xargs echo)  #  collapse spaces
+    echo "run $cmd"
+    $cmd >> log 2>&1
 }
 
 
