@@ -45,6 +45,7 @@ run_experiment()
            -o  topol.tpr \
            -po mdout.mdp \
          > log 2>&1
+    
 
     # this is the real application
     gmx mdrun  \
