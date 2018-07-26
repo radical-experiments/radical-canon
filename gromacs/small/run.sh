@@ -1,13 +1,13 @@
 #!/bin/sh
 
 BASE=`pwd`
-REPS=10
+REPS=2 
 ITERS="10000 100000"
 
 GROMPP_OPTS=""   # additional grompp options
 NDXFILE_OPTS=""  # additional grompp options to set ndxfile 
 MDRUN_OPTS=""    # additional mdrun options
-THREADNUM=1      # number of threads for mdrun
+THREADNUM=8      # number of threads for mdrun
 
 # ------------------------------------------------------------------------------
 #
@@ -36,7 +36,7 @@ run_experiment()
     cat ../rawdata/topol.top  > topol.top
     
     # run the preprocessor (one thread, very quick)
-    grompp \
+    gmx  grompp \
            $GROMPP_OPTS \
            $NDXFILE_OPTS \
            -f  grompp.mdp \
@@ -47,7 +47,7 @@ run_experiment()
          > log 2>&1
 
     # this is the real application
-    mdrun  \
+    gmx mdrun  \
            $MDRUN_OPTS \
            -nt  $THREADNUM \
            -o   traj.trr \
@@ -66,7 +66,6 @@ run_experiment()
 # one set of experiments for each given number of iterations
 for iter in $ITERS
 do
-
     # run $REPS numbers of experiments for this $iter
     rep=0
     while ! test $rep = $REPS
