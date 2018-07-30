@@ -1,8 +1,8 @@
 #!/bin/sh
 
 BASE=`pwd`
-REPS=2 
-ITERS="10000 100000"
+REPS=1
+ITERS="2500000"
 
 GROMPP_OPTS=""   # additional grompp options
 NDXFILE_OPTS=""  # additional grompp options to set ndxfile 
