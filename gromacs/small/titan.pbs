@@ -12,15 +12,6 @@ export PATH=/lustre/atlas1/bip149/scratch/merzky1/radical.canon/gromacs/small/gr
 
 which gmx
 
-module unload PrgEnv-pgi || true
-module load   PrgEnv-gnu || true
-
-# module load pmi
-# module load pmi-lib
-# module load cray-mpich
-# # module load gromacs/5.1.0
-# module load gromacs
-
 date
 aprun -n 1 ./run.sh
 date
