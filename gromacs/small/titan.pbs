@@ -1,0 +1,18 @@
+#!/bin/bash
+
+#PBS -A BIP149
+#PBS -N gromacs_test
+#PBS -j oe
+#PBS -l walltime=00:10:00,nodes=1
+## #no PBS -l gres=atlas1
+
+
+cd /lustre/atlas1/bip149/scratch/merzky1/radical.canon/gromacs/small
+export PATH=/lustre/atlas1/bip149/scratch/merzky1/radical.canon/gromacs/small/gromacs/bin:$PATH
+
+which gmx
+
+date
+aprun -n 1 ./run.sh
+date
+

@@ -2,7 +2,7 @@
 
 BASE=`pwd`
 REPS=1
-ITERS="2500000"
+ITERS="110000"
 
 GROMPP_OPTS=""   # additional grompp options
 NDXFILE_OPTS=""  # additional grompp options to set ndxfile 
