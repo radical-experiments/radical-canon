@@ -7,7 +7,8 @@ ITERS="100000"
 GROMPP_OPTS=""   # additional grompp options
 NDXFILE_OPTS=""  # additional grompp options to set ndxfile 
 MDRUN_OPTS=""    # additional mdrun options
-THREADNUM=8      # number of threads for mdrun
+THREADNUM=2      # number of threads   for mdrun
+PROCNUM=2        # number of processes for mdrun
 
 # ------------------------------------------------------------------------------
 #
@@ -53,7 +54,9 @@ run_experiment()
     
 
     # this is the real application
-    cmd=$(echo "gmx mdrun
+    export OMP_NUM_THREADS=$THREADNUM 
+    cmd=$(echo "mpirun -np $PROCNUM
+           gmx mdrun
            $MDRUN_OPTS
            -nt  $THREADNUM
            -o   traj.trr
