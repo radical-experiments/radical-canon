@@ -2,12 +2,13 @@
 
 BASE=`pwd`
 REPS=1
-ITERS="110000"
+ITERS="6000000"
 
 GROMPP_OPTS=""   # additional grompp options
 NDXFILE_OPTS=""  # additional grompp options to set ndxfile 
 MDRUN_OPTS=""    # additional mdrun options
-THREADNUM=8      # number of threads for mdrun
+THREADNUM=1      # number of threads   for mdrun
+PROCNUM=1        # number of processes for mdrun (MPI)
 
 # ------------------------------------------------------------------------------
 #
@@ -32,33 +33,33 @@ run_experiment()
     echo "run experiment $experiment"
 
     # prepare input data.  Vivek can motivate this magic I think :)
-    cat ../rawdata/start.gro  | sed "1"','"25"'!d'            > start_tmp.gro
+    cat ../rawdata/start.gro  | sed "1"','"25"'!d'            > start.gro
     cat ../rawdata/grompp.mdp | sed -e "s/###ITER###/$iter/g" > grompp.mdp
     cat ../rawdata/topol.top  > topol.top
     
     # run the preprocessor (one thread, very quick)
-    cmd=$(echo "gmx  grompp
-           $GROMPP_OPTS
-           $NDXFILE_OPTS
-           -f  grompp.mdp
-           -p  topol.top
-           -c  start_tmp.gro
-           -o  topol.tpr
-           -po mdout.mdp" | xargs echo)  #  collapse spaces
+    cmd=$(echo "gmx grompp $GROMPP_OPTS $NDXFILE_OPTS
+                -f  grompp.mdp
+                -p  topol.top
+                -c  start.gro
+                -o  topol.tpr
+                -po mdout.mdp" | xargs echo)  #  collapse spaces
     echo "run $cmd"
     $cmd > log 2>&1
+
+    exit
     
 
     # this is the real application
-    cmd=$(echo "gmx mdrun
-           $MDRUN_OPTS
-           -nt  $THREADNUM
-           -o   traj.trr
-           -e   ener.edr
-           -s   topol.tpr
-           -g   mdlog.log
-           -cpo state.cpt
-           -c   outgro" | xargs echo)  #  collapse spaces
+    export OMP_NUM_THREADS=$THREADNUM
+    cmd=$(echo "mpirun -np $PROCNUM
+                gmx  mdrun  $MDRUN_OPTS
+                -o   traj.trr
+                -e   ener.edr
+                -s   topol.tpr
+                -g   mdlog.log
+                -cpo state.cpt
+                -c   outgro" | xargs echo)  #  collapse spaces
     echo "run $cmd"
     $cmd >> log 2>&1
 }
