@@ -2,13 +2,13 @@
 
 BASE=`pwd`
 REPS=1
-ITERS="6000000"
+ITERS="1000000"
 
 GROMPP_OPTS=""   # additional grompp options
 NDXFILE_OPTS=""  # additional grompp options to set ndxfile 
 MDRUN_OPTS=""    # additional mdrun options
 THREADNUM=1      # number of threads   for mdrun
-PROCNUM=1        # number of processes for mdrun (MPI)
+PROCNUM=4        # number of processes for mdrun (MPI)
 
 # ------------------------------------------------------------------------------
 #
@@ -43,25 +43,24 @@ run_experiment()
                 -p  topol.top
                 -c  start.gro
                 -o  topol.tpr
-                -po mdout.mdp" | xargs echo)  #  collapse spaces
+                -po mdout.mdp" | xargs echo)  # collapse spaces
     echo "run $cmd"
     $cmd > log 2>&1
 
-    exit
-    
 
     # this is the real application
     export OMP_NUM_THREADS=$THREADNUM
-    cmd=$(echo "mpirun -np $PROCNUM
-                gmx  mdrun  $MDRUN_OPTS
+    cmd=$(echo "mpirun -oversubscribe -np $PROCNUM
+                gmx_mpi mdrun $MDRUN_OPTS
                 -o   traj.trr
                 -e   ener.edr
                 -s   topol.tpr
                 -g   mdlog.log
                 -cpo state.cpt
                 -c   outgro" | xargs echo)  #  collapse spaces
+
     echo "run $cmd"
-    $cmd >> log 2>&1
+    $cmd | tee -a log 2>&1
 }
 
 

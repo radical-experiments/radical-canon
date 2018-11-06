@@ -29,42 +29,40 @@ run_experiment()
     mkdir -p $experiment/
     cd       $experiment/
     
-    echo "running experiment $experiment"
+    echo
+    echo "run experiment $experiment"
 
     # prepare input data.  Vivek can motivate this magic I think :)
-    cat ../rawdata/start.gro  > start_tmp.gro
+    cat ../rawdata/start.gro  > start.gro
     cat ../rawdata/grompp.mdp | sed -e "s/###ITER###/$iter/g" > grompp.mdp
     cat ../rawdata/topol.top  > topol.top
     cat ../rawdata/index.ndx  > index.ndx
     cp  ../rawdata/*.itp .
 
     # run the preprocessor (one thread, very quick)
-    cmd=$(echo "gmx grompp
-           $GROMPP_OPTS
-           $NDXFILE_OPTS
-           -n  index.ndx
-           -f  grompp.mdp
-           -p  topol.top
-           -c  start_tmp.gro
-           -o  topol.tpr
-           -po mdout.mdp 
-           -maxwarn 1" | xargs echo)  # collapse spaces
+    cmd=$(echo "gmx grompp $GROMPP_OPTS $NDXFILE_OPTS
+                -f  grompp.mdp
+                -p  topol.top
+                -c  start.gro
+                -o  topol.tpr
+                -n  index.ndx
+                -maxwarn 1
+                -po mdout.mdp" | xargs echo)  # collapse spaces
     echo "run $cmd"
     $cmd > log 2>&1
-    
+
 
     # this is the real application
-    export OMP_NUM_THREADS=$THREADNUM 
-    cmd=$(echo "mpirun -np $PROCNUM
-           gmx mdrun
-           $MDRUN_OPTS
-           -nt  $THREADNUM
-           -o   traj.trr
-           -e   ener.edr
-           -s   topol.tpr
-           -g   mdlog.log
-           -cpo state.cpt
-           -c   outgro" | xargs echo)  #  collapse spaces
+    export OMP_NUM_THREADS=$THREADNUM
+    cmd=$(echo "mpirun -oversubscribe -np $PROCNUM
+                gmx_mpi mdrun $MDRUN_OPTS
+                -nt  $THREADNUM
+                -o   traj.trr
+                -e   ener.edr
+                -s   topol.tpr
+                -g   mdlog.log
+                -cpo state.cpt
+                -c   outgro" | xargs echo)  #  collapse spaces
 
     echo "run $cmd"
     $cmd >> log 2>&1
