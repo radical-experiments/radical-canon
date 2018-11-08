@@ -7,8 +7,9 @@ ITERS="1000000"
 GROMPP_OPTS=""   # additional grompp options
 NDXFILE_OPTS=""  # additional grompp options to set ndxfile 
 MDRUN_OPTS=""    # additional mdrun options
+
+PROCNUM=8        # number of processes for mdrun (MPI)
 THREADNUM=1      # number of threads   for mdrun
-PROCNUM=4        # number of processes for mdrun (MPI)
 
 # ------------------------------------------------------------------------------
 #
@@ -20,7 +21,7 @@ run_experiment()
     iter=$1
     rep=$2
 
-    experiment=`printf "experiment_%d_%03d" $iter $rep`
+    experiment=`printf "experiment_%d_%d_%d_%03d" $PROCNUM $THREADNUM $iter $rep`
 
     # create that experiment in the given base dir (we fail if that exists)
     cd       $BASE

@@ -2,13 +2,13 @@
 
 BASE=`pwd`
 REPS=1
-ITERS="100000"
+ITERS="1000000"
 
 GROMPP_OPTS=""   # additional grompp options
 NDXFILE_OPTS=""  # additional grompp options to set ndxfile 
 MDRUN_OPTS=""    # additional mdrun options
-THREADNUM=2      # number of threads   for mdrun
-PROCNUM=2        # number of processes for mdrun
+THREADNUM=1      # number of threads   for mdrun
+PROCNUM=4        # number of processes for mdrun (MPI)
 
 # ------------------------------------------------------------------------------
 #
@@ -46,7 +46,6 @@ run_experiment()
                 -c  start.gro
                 -o  topol.tpr
                 -n  index.ndx
-                -maxwarn 1
                 -po mdout.mdp" | xargs echo)  # collapse spaces
     echo "run $cmd"
     $cmd > log 2>&1
@@ -65,7 +64,7 @@ run_experiment()
                 -c   outgro" | xargs echo)  #  collapse spaces
 
     echo "run $cmd"
-    $cmd >> log 2>&1
+    $cmd | tee -a log 2>&1
 }
 
 
