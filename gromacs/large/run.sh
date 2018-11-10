@@ -34,7 +34,7 @@ run_experiment()
     echo "run experiment $experiment"
 
     # prepare input data.  Vivek can motivate this magic I think :)
-    cat ../rawdata/dynamic2.mdp | sed -e "s/###ITER###/$iter/g" > dynamic2.mdp
+    cat ../rawdata/dynamic2_new.mdp | sed -e "s/###ITER###/$iter/g" > dynamic2.mdp
     cp  ../rawdata/FF.itp           ./
     cp  ../rawdata/FNF.itp          ./
     cp  ../rawdata/Martini.top      ./
